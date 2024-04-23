@@ -1,0 +1,200 @@
+﻿@using LMS_SEARCH_BY_CIF_CMND.Models;
+@{
+    ViewBag.Title = "LMS Inquiry";
+    int stt = 1;
+    string thongtintimkiem = (string)ViewBag.thongTinTimKiem;
+    string leadId = (string)ViewBag.leadId;
+    List<string> phonePrefixes = new List<string> { "032", "033", "034", "035", "036", "037", "038", "039", "096", "097", "098", "086" };
+    SESSION_PARA oPara = CShared.getSession();
+}
+@model List<ReportLMSModel>
+
+
+<table id="tbDataList" class="table table-striped table-bordered" cellspacing="0">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên Campaign</th>
+            <th>Lead ID</th>
+            <th>Số CIF</th>
+            <th>Họ Tên Khách Hàng </th>
+            <th>Số CMND/CCCD</th>
+            <th>Số Điện Thoại Khách Hàng</th>
+            <th>Segment</th>
+            <th>Email</th>
+            <th>Credit Policy</th>
+            <th>Ngày Hết Hạn Lead</th>
+            <th>Hạn Mức Thẻ Đề Xuất</th>
+            <th>Mã Sản Phẩm</th>
+            <th>Mã Đối Tượng Sản Phẩm</th>
+            <th>Mã Nhân Viên</th>
+            <th>Mã đơn vị quản lý</th>
+            <th>Tên đơn vị quản lý</th>
+            <th>Tên chi nhánh phục vụ</th>
+            <th>Mã lý do từ chối </th>
+            <th>Lý do từ chối </th>
+            <th>ekyc.duplicate_faces CMND/CCCD</th>
+            <th>Luồng Hồ Sơ</th>
+            <th>Mã Trạng Thái Hồ Sơ</th>
+            <th>Trạng thái hồ sơ</th>
+            <th>Lý do review </th>
+            <th>Lý do pending</th>
+            <th>Ngày tạo LEAD </th>
+            <th>Ngày cập nhật </th>
+            <th>Link DOP </th>
+            <th>Trạng Thái Trên DOP</th>
+            <th>UTM Source</th>
+            <th>UTM Campaign</th>
+            <th>UTM Medium</th>
+            <th>UTM Channel</th>
+            <th>UTM Referral</th>
+            <th>Loại thẻ đăng ký</th>
+            <th>Card ID</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+
+            string BRANCH_CODE = "";
+
+            if (item.BRANCH_CODE == "")
+            {
+                if (!String.IsNullOrEmpty(item.UTM_REFERRAL) && item.UTM_REFERRAL.StartsWith("K") && item.UTM_REFERRAL.Length >= 5 && item.UTM_REFERRAL.Substring(1, 3).All(char.IsDigit))
+                {
+                    string[] referralParts = item.UTM_REFERRAL.Split('_');
+                    string extractedNumber = referralParts[0].Substring(1);
+                    BRANCH_CODE = extractedNumber;
+                }
+
+            }
+            else
+            {
+                BRANCH_CODE = item.BRANCH_CODE;
+            }
+
+            bool isMatchingBranch = (BRANCH_CODE == oPara.oAccount.Branch);
+            if (!isMatchingBranch)
+            {
+                continue;
+            }
+            <tr>
+                <td>@stt</td>
+                <td>@item.CAMPAIGN_ID</td>
+                <th>@item.LEAD_ID</th>
+                <td>@item.CIF</td>
+                <td>@item.FULLNAME</td>
+                <td>@((String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_CCCD : item.NATIONALID)</td>
+                <td>@((String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_MOBILEPHONE : item.MOBILEPHONE1)</td>
+                <td>
+                    @{
+                        string phoneNumber = (String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_MOBILEPHONE : item.MOBILEPHONE1;
+
+                        string prefixCheck = "B";
+                        foreach (var prefix in phonePrefixes)
+                        {
+                            if (phoneNumber.StartsWith(prefix))
+                            {
+                                prefixCheck = "A";
+                                break;
+                            }
+                        }
+
+                        @prefixCheck
+                    }
+                </td>
+                <td>@item.EMAIL</td>
+                <td>@item.CREDIT_POLICY</td>
+                <td>@item.LEAD_FLOW_EXPIRED_DATE</td>
+                <td>@item.RECOMMENDED_CREDIT_LIMIT</td>
+                <td>@item.CONTRACTPRODUCTCODE</td>
+                <td>@item.CLASSIFIER_CODE</td>
+                <td>@item.STAFF_CODE</td>
+                <td>@BRANCH_CODE</td>
+                <td>@item.BRANCH_NAME</td>
+                <td>@item.BRANCH_SERVE</td>
+                <td>@(String.IsNullOrEmpty(item.REJECTED_CODE) ? item.DOCUMENT_4 : item.REJECTED_CODE)</td>
+                <td>@item.REJECTED_REASON</td>
+                <td>@item.EKYC_RETRIEVAL_DATA</td>
+
+                <td>@item.CLIENT_TIER</td>
+                <td>@item.STATUS_ID</td>
+                <td>@item.STATUS_DESC</td>
+                <td>@item.REVIEW_REASON</td>
+                <td>@item.PENDING_REASON</td>
+
+                <td>@item.CREATED_DATE</td>
+                <td>@item.MODIFIED_DATE</td>
+                <td>@item.URL_FULL</td>
+                <td>@item.APPROVAL_STATUS</td>
+                <td>@item.UTM_SOURCE</td>
+                <td>@item.UTM_CAMPAIGN</td>
+                <td>@item.UTM_MEDIUM</td>
+                <td>@item.UTM_CHANNEL</td>
+                <td>@item.UTM_REFERRAL</td>
+                <td>@item.CARD_REGISTERED_TYPE</td>
+                <td>@item.CARD_ID</td>
+            </tr>
+            stt++;
+        }
+        @for (int x = Model.Count(); x < 10; x++)
+        {
+            <tr class="unused-row">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td> 
+                <td>&nbsp;</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#totalItem").text('@ViewBag.SoLuong');
+        $('#tbDataList tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                tableData.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+    });
+</script>
+
