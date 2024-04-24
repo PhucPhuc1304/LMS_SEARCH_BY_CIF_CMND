@@ -53,7 +53,6 @@
         </tr>
     </thead>
     <tbody>
-
         @foreach (var item in Model)
         {
 
@@ -88,21 +87,12 @@
                 <td>@((String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_CCCD : item.NATIONALID)</td>
                 <td>@((String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_MOBILEPHONE : item.MOBILEPHONE1)</td>
                 <td>
-                    @{
-                        string phoneNumber = (String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_MOBILEPHONE : item.MOBILEPHONE1;
+                @{
+                    string phoneNumber = String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId) ? item.MOBILEPHONE1 : item.MOBILEPHONE1;
+                    string prefixCheck = phonePrefixes.Any(prefix => phoneNumber.StartsWith(prefix)) ? "A" : "B";
+                    @prefixCheck
 
-                        string prefixCheck = "B";
-                        foreach (var prefix in phonePrefixes)
-                        {
-                            if (phoneNumber.StartsWith(prefix))
-                            {
-                                prefixCheck = "A";
-                                break;
-                            }
-                        }
-
-                        @prefixCheck
-                    }
+                }
                 </td>
                 <td>@item.EMAIL</td>
                 <td>@item.CREDIT_POLICY</td>
@@ -123,7 +113,6 @@
                 <td>@item.STATUS_DESC</td>
                 <td>@item.REVIEW_REASON</td>
                 <td>@item.PENDING_REASON</td>
-
                 <td>@item.CREATED_DATE</td>
                 <td>@item.MODIFIED_DATE</td>
                 <td>@item.URL_FULL</td>
