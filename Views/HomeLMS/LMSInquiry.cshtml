@@ -88,10 +88,8 @@
                 <td>@((String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId)) ? item.ENCODE_MOBILEPHONE : item.MOBILEPHONE1)</td>
                 <td>
                 @{
-                    string phoneNumber = String.IsNullOrEmpty(thongtintimkiem) && String.IsNullOrEmpty(leadId) ? item.MOBILEPHONE1 : item.MOBILEPHONE1;
-                    string prefixCheck = phonePrefixes.Any(prefix => phoneNumber.StartsWith(prefix)) ? "A" : "B";
+                    string prefixCheck = phonePrefixes.Any(prefix => item.MOBILEPHONE1.StartsWith(prefix)) ? "A" : "B";
                     @prefixCheck
-
                 }
                 </td>
                 <td>@item.EMAIL</td>
@@ -107,7 +105,6 @@
                 <td>@(String.IsNullOrEmpty(item.REJECTED_CODE) ? item.DOCUMENT_4 : item.REJECTED_CODE)</td>
                 <td>@item.REJECTED_REASON</td>
                 <td>@item.EKYC_RETRIEVAL_DATA</td>
-
                 <td>@item.CLIENT_TIER</td>
                 <td>@item.STATUS_ID</td>
                 <td>@item.STATUS_DESC</td>
